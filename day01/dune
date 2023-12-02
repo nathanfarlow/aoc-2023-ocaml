@@ -1,4 +1,4 @@
 (executable
  (name main)
- (libraries common core core_unix.command_unix)
- (preprocess (pps ppx_jane)))
+ (libraries common core)
+ (preprocess (pps ppx_jane ppx_string)))

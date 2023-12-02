@@ -2,7 +2,10 @@ open! Core
 
 let read_all file = In_channel.read_all file
 
-let with_input_file ?(preprocess = Fn.id) ~part1 ~part2 () =
+let trim_and_split_lines s =
+  String.strip s |> String.split_lines |> List.map ~f:String.strip
+
+let with_input_file ~part1 ~part2 ~preprocess =
   Command.basic ~summary:"Generate an MD5 hash of the input data"
     (let%map_open.Command f =
        choose_one ~if_nothing_chosen:Raise
