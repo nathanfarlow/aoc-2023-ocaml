@@ -36,9 +36,10 @@ let part2 =
   List.sum
     (module Int)
     ~f:(fun { rounds; _ } ->
-      List.map rounds ~f:(fun { red; green; blue } -> (red, green, blue))
-      |> List.unzip3
-      |> fun (rs, gs, bs) ->
+      let rs, gs, bs =
+        List.map rounds ~f:(fun { red; green; blue } -> (red, green, blue))
+        |> List.unzip3
+      in
       let max_exn l =
         List.filter_opt l
         |> List.max_elt ~compare:Int.compare
