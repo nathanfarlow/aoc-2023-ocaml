@@ -20,8 +20,8 @@ let parse s =
   in
   trim_and_split_lines s |> List.map ~f:parse_game
 
-let part1 games =
-  List.filter games ~f:(fun { rounds; _ } ->
+let part1 =
+  List.filter ~f:(fun { rounds; _ } ->
       let is_valid_round { red; green; blue } =
         let ( <= ) color value =
           Option.value_map color ~default:true ~f:(( >= ) value)
@@ -29,13 +29,12 @@ let part1 games =
         red <= 12 && green <= 13 && blue <= 14
       in
       List.for_all rounds ~f:is_valid_round)
-  |> List.sum (module Int) ~f:(fun { id; _ } -> id)
-  |> printf "%d\n"
+  >> List.sum (module Int) ~f:(fun { id; _ } -> id)
+  >> printf "%d\n"
 
-let part2 games =
+let part2 =
   List.sum
     (module Int)
-    games
     ~f:(fun { rounds; _ } ->
       List.map rounds ~f:(fun { red; green; blue } -> (red, green, blue))
       |> List.unzip3
@@ -46,6 +45,6 @@ let part2 games =
         |> Option.value_exn
       in
       max_exn rs * max_exn gs * max_exn bs)
-  |> printf "%d\n"
+  >> printf "%d\n"
 
 let () = run (with_input_file ~part1 ~part2 ~parse)

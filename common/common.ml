@@ -1,5 +1,6 @@
 open! Core
 
+let ( >> ) f g x = g (f x)
 let split ~on = Str.split (Str.regexp on)
 
 let split_at s ~on ~i =
