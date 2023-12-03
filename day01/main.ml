@@ -41,4 +41,4 @@ let part2 lines =
   in
   List.sum (module Int) lines ~f |> printf "%d\n"
 
-let () = run (with_input_file ~part1 ~part2 ~preprocess:trim_and_split_lines)
+let () = run (with_input_file ~part1 ~part2 ~parse:trim_and_split_lines)
