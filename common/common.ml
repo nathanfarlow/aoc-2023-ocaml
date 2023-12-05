@@ -1,6 +1,18 @@
 open! Core
 
+(* Infix things *)
+
+include Option.Let_syntax
+
 let ( >> ) f g x = g (f x)
+
+(* Array utils *)
+
+let get_opt arr i =
+  if i < 0 || i >= Array.length arr then None else Some (Array.unsafe_get arr i)
+
+(* String utils *)
+
 let split ~on = Str.split (Str.regexp on)
 
 let split_at s ~on ~i =
@@ -18,10 +30,10 @@ let capture_exn ~re s =
   | Some s -> s
   | None -> failwith [%string "unable to match `%{re}` in `%{s}`"]
 
-let read_all file = In_channel.read_all file
+(* Runtime things *)
 
-let trim_and_split_lines s =
-  String.strip s |> String.split_lines |> List.map ~f:String.strip
+let trim_and_split_lines =
+  String.strip >> String.split_lines >> List.map ~f:String.strip
 
 let with_input_file ~part1 ~part2 ~parse =
   Command.basic ~summary:"Advent of code"
@@ -34,6 +46,6 @@ let with_input_file ~part1 ~part2 ~parse =
            |> map ~f:(fun b -> Option.some_if b part2);
          ]
      and input = anon ("input" %: string) in
-     fun () -> read_all input |> parse |> f)
+     fun () -> In_channel.read_all input |> parse |> f)
 
 let run = Command_unix.run
