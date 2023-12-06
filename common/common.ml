@@ -16,8 +16,10 @@ let get_opt arr i =
 let split ~on = Str.split (Str.regexp on)
 
 let split_at s ~on ~i =
-  let s = split ~on s in
-  List.nth_exn s i
+  let split = split ~on s in
+  match List.nth split i with
+  | Some s -> s
+  | None -> raise_s [%message "split_at" (split : string list) (i : int)]
 
 let capture ~re s =
   try
