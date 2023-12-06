@@ -38,12 +38,9 @@ let part1 grid =
   |> printf "%d\n"
 
 module Int2 = struct
-  module T = struct
-    type t = int * int [@@deriving sexp, compare]
-  end
+  type t = int * int
 
-  include T
-  include Comparable.Make (T)
+  include Tuple.Comparable (Int) (Int)
 end
 
 let part2 grid =
