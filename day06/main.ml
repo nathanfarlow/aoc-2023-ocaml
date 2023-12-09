@@ -3,11 +3,11 @@ open! Common
 
 type race = { time : int; dist : int }
 
-(* No math just code*)
+(* No math just code *)
 let both_parts =
   List.map ~f:(fun race ->
-      List.range 0 race.time
-      |> List.count ~f:(fun held_down ->
+      Sequence.init race.time ~f:Fn.id
+      |> Sequence.count ~f:(fun held_down ->
              held_down * (race.time - held_down) > race.dist))
   >> List.fold ~init:1 ~f:Int.( * )
   >> printf "%d\n"
