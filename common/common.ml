@@ -13,9 +13,10 @@ let get_opt arr i =
 
 (* String utils *)
 
-let split ~on = Str.split (Str.regexp on)
+let whitespace = "[ \t\n\r]+"
+let split ?(on = whitespace) = Str.split (Str.regexp on)
 
-let split_at s ~on ~i =
+let split_at ?(on = whitespace) ~i s =
   let split = split ~on s in
   match List.nth split i with
   | Some s -> s
