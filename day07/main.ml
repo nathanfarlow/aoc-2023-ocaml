@@ -17,8 +17,6 @@ module Card = struct
 end
 
 module Hand = struct
-  type t = Card.t list
-
   let counts t =
     List.sort_and_group t ~compare:Card.compare
     |> List.map ~f:List.length
@@ -40,26 +38,25 @@ module Joker_hand = struct
       let counts =
         List.filter x ~f:(( <> ) Card.jack) |> counts |> function
         | l when num_jacks = 0 -> l
-        | [] -> [ num_jacks ]
         | x :: xs -> (x + num_jacks) :: xs
+        | [] -> [ num_jacks ]
       in
-      (counts, List.map x ~f:(fun n -> if n = Card.jack then 1 else n))
+      let weak_jokers =
+        List.map x ~f:(fun n -> if n = Card.jack then 0 else n)
+      in
+      (counts, weak_jokers)
     in
     Comparable.lift [%compare: int list * Card.t list] ~f
 end
 
-module type S = sig
-  type t = Card.t list [@@deriving compare]
-end
-
-let go (module M : S) players =
-  List.sort players ~compare:[%compare: M.t * int]
+let go compare players =
+  List.sort players ~compare:(Comparable.lift compare ~f:fst)
   |> List.mapi ~f:(fun i (_hand, bid) -> bid * (i + 1))
   |> List.sum (module Int) ~f:Fn.id
   |> printf "%d\n"
 
-let part1 = go (module Hand)
-let part2 = go (module Joker_hand)
+let part1 = go Hand.compare
+let part2 = go Joker_hand.compare
 
 let parse s =
   trim_and_split_lines s
