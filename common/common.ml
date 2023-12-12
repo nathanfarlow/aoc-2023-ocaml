@@ -1,4 +1,5 @@
 open! Core
+module Timer = Timer
 
 (* Infix things *)
 
@@ -32,6 +33,8 @@ let capture_exn ~re s =
   match capture ~re s with
   | Some s -> s
   | None -> failwith [%string "unable to match `%{re}` in `%{s}`"]
+
+let remove_chars ~chars = String.filter ~f:(fun c -> not (String.mem chars c))
 
 (* Runtime things *)
 
