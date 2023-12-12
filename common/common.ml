@@ -1,5 +1,8 @@
+(* [@@@warning "-26-27-32-69"] *)
+
 open! Core
 module Timer = Timer
+module Math = Math
 
 (* Infix things *)
 

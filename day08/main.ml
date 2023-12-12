@@ -1,5 +1,3 @@
-(* [@@@warning "-26-27-32-69"] *)
-
 open! Core
 open! Common
 
@@ -45,24 +43,17 @@ let part1 (insns, nodes) =
   |> Sequence.length |> printf "%d\n"
 
 let part2 (insns, nodes) =
-  (* I paid for the whole computer, so I'm going to use the whole computer *)
-  let unzip sequences =
-    Sequence.unfold_step ~init:sequences ~f:(fun sequences ->
-        let next = List.map sequences ~f:Sequence.next in
-        if List.exists next ~f:Option.is_none then Done
-        else
-          let next = List.filter_opt next in
-          Yield (List.map next ~f:fst, List.map next ~f:snd))
+  let path_len start =
+    path insns nodes ~start |> Sequence.Generator.run |> Sequence.tl
+    |> Option.value_exn
+    |> Sequence.findi ~f:(fun _ n -> String.is_suffix n.Node.name ~suffix:"Z")
+    |> Option.value_exn |> fst |> ( + ) 1
   in
   Map.keys nodes
   |> List.filter ~f:(String.is_suffix ~suffix:"A")
-  |> List.map ~f:(fun start -> path insns nodes ~start)
-  |> List.map ~f:Sequence.Generator.run
-  |> unzip
-  |> Sequence.take_while ~f:(fun nodes ->
-         List.exists nodes ~f:(fun { name; _ } ->
-             not @@ String.is_suffix name ~suffix:"Z"))
-  |> Sequence.length |> printf "%d\n"
+  |> List.map ~f:path_len
+  |> List.reduce_exn ~f:Math.lcm
+  |> printf "%d\n"
 
 let parse s =
   split s ~on:"\n\n" |> function
