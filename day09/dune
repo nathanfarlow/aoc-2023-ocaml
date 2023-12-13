@@ -1,0 +1,4 @@
+(executable
+ (name main)
+ (libraries common core)
+ (preprocess (pps ppx_jane ppx_string)))
